@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>AR Rumah 3D</title>
+
+  <!-- Library A-Frame -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+  <!-- Library AR.js untuk marker-based AR -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #111827;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 14px 16px;
+      color: white;
+      background: rgba(15, 23, 42, 0.85);
+      z-index: 10;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 19px;
+      margin: 0 0 6px;
+    }
+
+    .header p {
+      font-size: 12px;
+      margin: 0;
+      color: #cbd5e1;
+    }
+
+    .status {
+      position: fixed;
+      top: 88px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.88);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 22px;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 12px;
+    }
+
+    .controls button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 15px;
+      color: white;
+      background: #2563eb;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .controls button:active {
+      background: #1d4ed8;
+    }
+
+    .hint {
+      position: fixed;
+      bottom: 78px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      z-index: 10;
+      text-shadow: 0 1px 4px black;
+      padding: 0 12px;
+    }
+
+    /* Scene AR memenuhi layar */
+    a-scene {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>AR Rumah 3D</h1>
+    <p>Augmented Reality Berbasis Marker</p>
+  </div>
+
+  <div class="status" id="status">
+    Menunggu kamera dan marker...
+  </div>
+
+  <div class="hint">
+    Arahkan kamera ke marker Hiro untuk melihat rumah 3D.
+  </div>
+
+  <div class="controls">
+    <button id="rotateButton">Putar Rumah</button>
+    <button id="scaleUpButton">Perbesar +</button>
+    <button id="scaleDownButton">Perkecil −</button>
+    <button id="resetButton">Reset</button>
+  </div>
+
+  <!-- Scene Augmented Reality -->
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="antialias: true; alpha: true"
+    arjs="sourceType: webcam; debugUIEnabled: false;">
+
+    <!-- Marker Hiro -->
+    <a-marker
+      id="hiroMarker"
+      preset="hiro"
+      emitevents="true"
+      smooth="true"
+      smooth-count="5">
+
+      <!-- Semua objek rumah berada di dalam marker -->
+      <a-entity id="house"
+                position="0 0 0"
+                rotation="0 0 0"
+                scale="0.8 0.8 0.8">
+
+        <!-- HALAMAN / PONDASI -->
+        <a-box
+          position="0 0.025 0"
+          width="1.8"
+          height="0.05"
+          depth="1.6"
+          color="#65a30d">
+        </a-box>
+
+        <!-- DINDING UTAMA -->
+        <a-box
+          position="0 0.43 0"
+          width="1.2"
+          height="0.8"
+          depth="1.0"
+          color="#f5deb3">
+        </a-box>
+
+        <!-- ATAP KIRI -->
+        <a-box
+          position="-0.29 0.91 0"
+          rotation="0 0 35"
+          width="0.82"
+          height="0.09"
+          depth="1.18"
+          color="#b91c1c">
+        </a-box>
+
+        <!-- ATAP KANAN -->
+        <a-box
+          position="0.29 0.91 0"
+          rotation="0 0 -35"
+          width="0.82"
+          height="0.09"
+          depth="1.18"
+          color="#b91c1c">
+        </a-box>
+
+        <!-- CEROBONG -->
+        <a-box
+          position="-0.34 1.02 -0.25"
+          width="0.15"
+          height="0.42"
+          depth="0.16"
+          color="#78350f">
+        </a-box>
+
+        <!-- PINTU DEPAN -->
+        <a-box
+          position="0 0.27 0.506"
+          width="0.25"
+          height="0.5"
+          depth="0.025"
+          color="#78350f">
+        </a-box>
+
+        <!-- GAGANG PINTU -->
+        <a-sphere
+          position="0.08 0.27 0.526"
+          radius="0.018"
+          color="#facc15">
+        </a-sphere>
+
+        <!-- JENDELA DEPAN KIRI -->
+        <a-box
+          position="-0.38 0.52 0.512"
+          width="0.22"
+          height="0.22"
+          depth="0.025"
+          color="#38bdf8">
+        </a-box>
+
+        <!-- BINGKAI JENDELA KIRI -->
+        <a-box
+          position="-0.38 0.52 0.53"
+          width="0.25"
+          height="0.025"
+          depth="0.015"
+          color="#ffffff">
+        </a-box>
+
+        <a-box
+          position="-0.38 0.52 0.53"
+          width="0.025"
+          height="0.25"
+          depth="0.015"
+          color="#ffffff">
+        </a-box>
+
+        <!-- JENDELA DEPAN KANAN -->
+        <a-box
+          position="0.38 0.52 0.512"
+          width="0.22"
+          height="0.22"
+          depth="0.025"
+          color="#38bdf8">
+        </a-box>
+
+        <!-- BINGKAI JENDELA KANAN -->
+        <a-box
+          position="0.38 0.52 0.53"
+          width="0.25"
+          height="0.025"
+          depth="0.015"
+          color="#ffffff">
+        </a-box>
+
+        <a-box
+          position="0.38 0.52 0.53"
+          width="0.025"
+          height="0.25"
+          depth="0.015"
+          color="#ffffff">
+        </a-box>
+
+        <!-- JALAN MENUJU PINTU -->
+        <a-box
+          position="0 0.045 0.95"
+          width="0.35"
+          height="0.025"
+          depth="0.65"
+          color="#9ca3af">
+        </a-box>
+
+        <!-- POHON KIRI -->
+        <a-cylinder
+          position="-0.72 0.2 0.05"
+          radius="0.06"
+          height="0.35"
+          color="#78350f">
+        </a-cylinder>
+
+        <a-sphere
+          position="-0.72 0.48 0.05"
+          radius="0.22"
+          color="#15803d">
+        </a-sphere>
+
+        <!-- POHON KANAN -->
+        <a-cylinder
+          position="0.72 0.2 0.05"
+          radius="0.06"
+          height="0.35"
+          color="#78350f">
+        </a-cylinder>
+
+        <a-sphere
+          position="0.72 0.48 0.05"
+          radius="0.22"
+          color="#16a34a">
+        </a-sphere>
+
+        <!-- LABEL 3D -->
+        <a-text
+          value="RUMAH 3D"
+          position="0 1.35 0"
+          align="center"
+          color="#ffffff"
+          width="3">
+        </a-text>
+
+        <!-- CAHAYA -->
+        <a-entity
+          light="type: ambient; intensity: 1.2">
+        </a-entity>
+
+        <a-entity
+          light="type: directional; intensity: 0.8"
+          position="-1 3 2">
+        </a-entity>
+
+      </a-entity>
+    </a-marker>
+
+    <!-- Kamera AR -->
+    <a-entity camera></a-entity>
+
+  </a-scene>
+
+  <script>
+    const marker = document.getElementById("hiroMarker");
+    const house = document.getElementById("house");
+    const statusText = document.getElementById("status");
+
+    // Status ketika marker ditemukan
+    marker.addEventListener("markerFound", function () {
+      statusText.textContent = "Marker terdeteksi! Rumah 3D aktif.";
+      statusText.style.background = "rgba(22, 101, 52, 0.92)";
+    });
+
+    // Status ketika marker hilang dari kamera
+    marker.addEventListener("markerLost", function () {
+      statusText.textContent = "Marker tidak terdeteksi.";
+      statusText.style.background = "rgba(153, 27, 27, 0.92)";
+    });
+
+    // Putar rumah 45 derajat setiap tombol ditekan
+    document.getElementById("rotateButton")
+      .addEventListener("click", function () {
+        const rotation = house.getAttribute("rotation");
+        house.setAttribute("rotation", {
+          x: rotation.x,
+          y: rotation.y + 45,
+          z: rotation.z
+        });
+      });
+
+    // Perbesar rumah
+    document.getElementById("scaleUpButton")
+      .addEventListener("click", function () {
+        const scale = house.getAttribute("scale");
+        const next = Math.min(scale.x + 0.1, 1.5);
+
+        house.setAttribute("scale", {
+          x: next,
+          y: next,
+          z: next
+        });
+      });
+
+    // Perkecil rumah
+    document.getElementById("scaleDownButton")
+      .addEventListener("click", function () {
+        const scale = house.getAttribute("scale");
+        const next = Math.max(scale.x - 0.1, 0.3);
+
+        house.setAttribute("scale", {
+          x: next,
+          y: next,
+          z: next
+        });
+      });
+
+    // Kembalikan ukuran dan rotasi ke pengaturan awal
+    document.getElementById("resetButton")
+      .addEventListener("click", function () {
+        house.setAttribute("rotation", "0 0 0");
+        house.setAttribute("scale", "0.8 0.8 0.8");
+      });
+  </script>
+
+</body>
+</html>
